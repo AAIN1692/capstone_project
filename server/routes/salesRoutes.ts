@@ -35,7 +35,8 @@ router.get(
     const granularityParam = (req.query.granularity as string) || "weekly";
     const validGranularities: Granularity[] = ["daily", "weekly", "monthly"];
     if (!validGranularities.includes(granularityParam as Granularity)) {
-      return res.status(400).json({ error: "granularity must be one of: daily, weekly, monthly." });
+      res.status(400).json({ error: "granularity must be one of: daily, weekly, monthly." });
+      return;
     }
     res.json(getTrend(req.salesFilters!, granularityParam as Granularity));
   })

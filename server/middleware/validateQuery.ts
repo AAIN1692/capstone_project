@@ -37,13 +37,16 @@ export function validateQuery(req: Request, res: Response, next: NextFunction) {
   const parsedRegionId = regionId ? Number(regionId) : undefined;
 
   if (repId && Number.isNaN(parsedRepId)) {
-    return res.status(400).json({ error: "repId must be a number." });
+    res.status(400).json({ error: "repId must be a number." });
+    return;
   }
   if (categoryId && Number.isNaN(parsedCategoryId)) {
-    return res.status(400).json({ error: "categoryId must be a number." });
+    res.status(400).json({ error: "categoryId must be a number." });
+    return;
   }
   if (regionId && Number.isNaN(parsedRegionId)) {
-    return res.status(400).json({ error: "regionId must be a number." });
+    res.status(400).json({ error: "regionId must be a number." });
+    return;
   }
 
   req.salesFilters = {

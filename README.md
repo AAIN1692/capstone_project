@@ -3,17 +3,44 @@
 A live sales/revenue dashboard for non-technical sales managers. Built for the Vibe Coding
 Capstone (Option B: Analytics Dashboard with Live Data).
 
-This repo is Sprint-1-ready: it implements all 6 must-have features (F1-F6) from the PRD
-against a seeded, realistic dataset. Open it in Cursor to review, extend, and take through
-Sprint 2 (stakeholder change request + polish).
+## Live URLs
+- **Application:** https://capstone-project-plum-six-96.vercel.app
+- **API:** https://capstoneproject-production-826b.up.railway.app/api
+- **API Health Check:** https://capstoneproject-production-826b.up.railway.app/api/health
+
+## Feature List
+- Live-updating KPI summary bar: total revenue, deals closed, average deal size, quota attainment
+- Revenue trend chart with daily / weekly / monthly granularity toggle
+- Breakdown charts by sales rep, product category, and region (tabbed)
+- Date range filtering (presets + custom range) combinable with rep / category / region filters
+- Plain-language error handling — no technical jargon ever reaches the UI
+- Loading states on every data-fetching section, including filter dropdown options
+- Mobile-responsive layout (Filter Bar and KPI Bar tested down to iPhone SE width)
+- Seeded, realistic dataset with deliberately designed patterns (a star performer, a slumping
+  region, a seasonal dip) so the charts have genuine signal to show
 
 ## Structure
 ```
-/server   Express + TypeScript API, SQLite database, seed script
+/server   Express + TypeScript API, SQLite database, seed script, tests
 /client   React + TypeScript + Vite frontend, Recharts, Tailwind
+/docs     Capstone planning deliverables (Phase 1-7 documents)
 ```
 
-## Getting Started in Cursor
+## Environment Variables
+
+**`server/.env`** (copy from `server/.env.example`)
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `PORT` | Port the API listens on | `4000` |
+| `DB_PATH` | Path to the SQLite database file | `./sales_pulse.db` |
+| `CLIENT_ORIGIN` | Allowed CORS origin (must match the frontend's real URL in production) | `https://capstone-project-plum-six-96.vercel.app` |
+
+**`client/.env`** (copy from `client/.env.example`)
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `VITE_API_URL` | Base URL the frontend calls for API requests | `https://capstoneproject-production-826b.up.railway.app/api` |
+
+## Local Setup
 
 **1. Backend**
 ```bash
@@ -32,37 +59,50 @@ cp .env.example .env
 npm run dev        # starts app on http://localhost:5173
 ```
 
-Open http://localhost:5173 — the dashboard should load with seeded data.
+Open http://localhost:5173.
 
-## What's already built (Sprint 1)
-- All 6 API endpoints (see `Phase3_Architecture.md` Section 4 for the full contract)
-- Seeded dataset with deliberate patterns (a star rep, a slumping region, a seasonal dip)
-  so the charts have something real to show
-- Full dashboard UI: KPI summary bar, revenue trend chart (daily/weekly/monthly), and
-  rep/category/region breakdown charts with tabs
-- Date range presets + custom range, rep/category/region filtering, clear-filters control
-- Plain-language error handling (no stack traces reach the UI)
-- Empty-state handling for filter combinations with no data
+## Running Tests
+```bash
+cd server
+npm install
+npm test
+```
+Covers unit tests for the aggregation service layer (`salesService.test.ts`) and integration
+tests for all 6 API endpoints against the real Express app (`salesRoutes.integration.test.ts`),
+including explicit checks that error responses never leak stack traces to the client.
 
-## What's next (Sprint 2 — per the capstone's simulated change request)
-1. User-facing error messages are already in place server-side; extend polish on the
-   frontend for edge cases (network failures, slow connections)
-2. Mobile-responsive layout — `KpiBar` and `TrendChart` were designed with this in mind
-   (they already use responsive Tailwind grid/flex), but should be tested and refined on
-   real small viewports
-3. Loading states are implemented for all three data-fetching sections (KPI bar, trend,
-   breakdown) — review and polish the skeleton/animation treatment
+## Deployment Guide
 
-## Design notes
-The visual direction is a "ledger" aesthetic — clean panels, a serif display face
-(Fraunces) for headings, tabular monospace numerals for financial figures, and a single
-confident green accent for "on pace" signals (with a warm red reserved for "behind pace" or
-errors) rather than a decorative color palette. This was a deliberate choice for a
-finance-adjacent, non-technical audience — see the frontend-design skill notes if
-extending it further.
+**Backend (Railway)**
+1. New Project → Deploy from GitHub repo → select this repo
+2. Settings → Source → Root Directory → `server`
+3. Settings → Build → Build Command `npm install && npm run build`, Start Command `node dist/server.js`
+4. Variables → set `CLIENT_ORIGIN` to your deployed frontend's exact origin (including
+   `https://`, no trailing slash) and `DB_PATH` to `./sales_pulse.db`
+5. Settings → Networking → Generate Domain
+6. The database auto-seeds on first boot (and on any redeploy that resets the filesystem) via
+   `seedIfEmpty()` in `server.ts` — no manual seed step needed after the first deploy
 
-## Known limitation
-SQLite is file-based; on some free-tier hosts (e.g. Railway) the filesystem is ephemeral
-across redeploys. `server.ts` re-initializes the schema on boot, but seeded data will need
-to be re-run (`npm run seed`) after a redeploy unless a persistent volume is attached. See
-`Phase3_Architecture.md` Section 6 (Risks) for the accepted tradeoff.
+**Frontend (Vercel)**
+1. Add New Project → select this repo → Root Directory → `client`
+2. Framework preset auto-detects as Vite
+3. Environment Variables → `VITE_API_URL` → your Railway URL + `/api`
+4. Deploy
+5. Go back to Railway and update `CLIENT_ORIGIN` to the real Vercel URL, then redeploy the
+   backend so CORS allows the live frontend
+
+## Known Limitation
+SQLite is file-based; Railway's filesystem is ephemeral across redeploys. `seedIfEmpty()`
+handles this automatically by re-seeding on boot if the database comes back empty — documented
+as an accepted tradeoff for this MVP rather than a defect (see `docs/Phase3_Architecture.md`
+Section 6).
+
+## Security
+See `docs/Phase7_Security_Audit.md` for the full pre-deployment checklist. No critical or high
+findings; no auth in MVP is a documented scope decision, not an oversight.
+
+## Design Notes
+The visual direction is a "ledger" aesthetic — clean panels, a serif display face (Fraunces)
+for headings, tabular monospace numerals for financial figures, and a single confident green
+accent for "on pace" signals (red reserved for "behind pace" or errors). Chosen deliberately
+for a finance-adjacent, non-technical audience.

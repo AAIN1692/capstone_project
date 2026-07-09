@@ -40,7 +40,7 @@ function quotaPeriodFor(d: Date): string {
   return `${d.getFullYear()}-Q${q}`;
 }
 
-function seed() {
+export function seed() {
   initSchema(db);
 
   // Clear existing data so seed is idempotent
@@ -128,4 +128,20 @@ function seed() {
   console.log(`Patterns seeded: star performer = ${STAR_PERFORMER}, slumping region = ${SLUMPING_REGION}, dip month index = ${DIP_MONTH_INDEX}`);
 }
 
-seed();
+/** Seeds the database only if it's currently empty (safe to call on every boot). */
+export function seedIfEmpty() {
+  initSchema(db);
+  const row = db.prepare("SELECT COUNT(*) AS count FROM deals").get() as { count: number };
+  if (row.count === 0) {
+    console.log("No deals found — running seed automatically...");
+    seed();
+  } else {
+    console.log(`Database already has ${row.count} deals — skipping auto-seed.`);
+  }
+}
+
+// Only run immediately when this file is executed directly via `npm run seed`,
+// not when it's imported by server.ts for the auto-seed-on-boot check.
+if (require.main === module) {
+  seed();
+}

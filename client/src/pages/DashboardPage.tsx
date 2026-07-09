@@ -36,6 +36,7 @@ export default function DashboardPage() {
   const [dateError, setDateError] = useState<string | null>(null);
 
   const [options, setOptions] = useState<FilterOptions | null>(null);
+  const [optionsLoading, setOptionsLoading] = useState(true);
 
   const [summary, setSummary] = useState<SummaryResult | null>(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
@@ -52,14 +53,17 @@ export default function DashboardPage() {
   const [breakdownError, setBreakdownError] = useState<string | null>(null);
 
   useEffect(() => {
+    setOptionsLoading(true);
     fetchFilterOptions()
       .then(setOptions)
-      .catch(() => setOptions({ reps: [], categories: [], regions: [] }));
+      .catch(() => setOptions({ reps: [], categories: [], regions: [] }))
+      .finally(() => setOptionsLoading(false));
   }, []);
 
   const handleFilterChange = useCallback((next: SalesFilters) => {
     if (next.startDate > next.endDate) {
       setDateError("Start date must be before end date.");
+      setFilters(next);
       return;
     }
     setDateError(null);
@@ -76,7 +80,6 @@ export default function DashboardPage() {
     setFilters((f) => ({ ...f, startDate: isoDate(start), endDate: isoDate(end) }));
   }, []);
 
-  // Fetch summary whenever filters change
   useEffect(() => {
     if (dateError) return;
     setSummaryLoading(true);
@@ -87,7 +90,6 @@ export default function DashboardPage() {
       .finally(() => setSummaryLoading(false));
   }, [filters, dateError]);
 
-  // Fetch trend whenever filters or granularity change
   useEffect(() => {
     if (dateError) return;
     setTrendLoading(true);
@@ -98,7 +100,6 @@ export default function DashboardPage() {
       .finally(() => setTrendLoading(false));
   }, [filters, granularity, dateError]);
 
-  // Fetch breakdown whenever filters or active tab change
   useEffect(() => {
     if (dateError) return;
     setBreakdownLoading(true);
@@ -121,36 +122,45 @@ export default function DashboardPage() {
       <FilterBar
         filters={filters}
         options={options}
+        optionsLoading={optionsLoading}
         onChange={handleFilterChange}
         onPreset={handlePreset}
         dateError={dateError}
       />
 
-      <KpiBar summary={summary} loading={summaryLoading} error={summaryError} />
+      {dateError ? (
+        <div className="bg-ledger-panel border border-ledger-line rounded-lg p-8 text-center text-ledger-slate text-sm">
+          Fix the date range above to see results.
+        </div>
+      ) : (
+        <>
+          <KpiBar summary={summary} loading={summaryLoading} error={summaryError} />
 
-      <TrendChart
-        trend={trend}
-        loading={trendLoading}
-        error={trendError}
-        granularity={granularity}
-        onGranularityChange={setGranularity}
-      />
+          <TrendChart
+            trend={trend}
+            loading={trendLoading}
+            error={trendError}
+            granularity={granularity}
+            onGranularityChange={setGranularity}
+          />
 
-      <div className="bg-ledger-panel border border-ledger-line rounded-lg p-1 flex gap-1 w-fit">
-        {BREAKDOWN_TABS.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setBreakdownTab(t.key)}
-            className={`px-4 py-2 text-sm rounded-md transition-colors ${
-              breakdownTab === t.key ? "bg-pulse-accent text-white" : "text-ledger-slate hover:text-ledger-ink"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+          <div className="bg-ledger-panel border border-ledger-line rounded-lg p-1 flex gap-1 w-fit overflow-x-auto max-w-full">
+            {BREAKDOWN_TABS.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setBreakdownTab(t.key)}
+                className={`px-4 py-2 min-h-[44px] text-sm rounded-md transition-colors whitespace-nowrap ${
+                  breakdownTab === t.key ? "bg-pulse-accent text-white" : "text-ledger-slate hover:text-ledger-ink"
+                }`}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
 
-      <BreakdownChart title={breakdownTitle} data={breakdown} loading={breakdownLoading} error={breakdownError} />
+          <BreakdownChart title={breakdownTitle} data={breakdown} loading={breakdownLoading} error={breakdownError} />
+        </>
+      )}
     </div>
   );
 }

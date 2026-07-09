@@ -1,5 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { Granularity, TrendResult } from "../../types/sales";
+import { useIsNarrowViewport } from "../../hooks/useIsNarrowViewport";
 
 interface TrendChartProps {
   trend: TrendResult | null;
@@ -15,6 +16,7 @@ const currencyShort = (v: number) => `$${(v / 1000).toFixed(0)}k`;
 
 /** Revenue-over-time chart with a daily/weekly/monthly granularity toggle. */
 export default function TrendChart({ trend, loading, error, granularity, onGranularityChange }: TrendChartProps) {
+  const isNarrow = useIsNarrowViewport();
   return (
     <div className="bg-ledger-panel border border-ledger-line rounded-lg p-5">
       <div className="flex items-center justify-between mb-4">
@@ -45,8 +47,13 @@ export default function TrendChart({ trend, loading, error, granularity, onGranu
         <ResponsiveContainer width="100%" height={260}>
           <LineChart data={trend.points}>
             <CartesianGrid stroke="#E4E7EC" vertical={false} />
-            <XAxis dataKey="period" tick={{ fontSize: 11, fill: "#5B6478" }} />
-            <YAxis tickFormatter={currencyShort} tick={{ fontSize: 11, fill: "#5B6478" }} />
+            <XAxis
+              dataKey="period"
+              tick={{ fontSize: isNarrow ? 10 : 11, fill: "#5B6478" }}
+              interval={isNarrow ? "preserveStartEnd" : 0}
+              minTickGap={isNarrow ? 20 : 5}
+            />
+            <YAxis tickFormatter={currencyShort} tick={{ fontSize: isNarrow ? 10 : 11, fill: "#5B6478" }} width={isNarrow ? 40 : 50} />
             <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, "Revenue"]} />
             <Line type="monotone" dataKey="revenue" stroke="#1E7F5C" strokeWidth={2} dot={false} />
           </LineChart>

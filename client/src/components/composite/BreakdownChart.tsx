@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { BreakdownResult } from "../../types/sales";
+import { useIsNarrowViewport } from "../../hooks/useIsNarrowViewport";
 
 interface BreakdownChartProps {
   title: string;
@@ -12,6 +13,7 @@ const currencyShort = (v: number) => `$${(v / 1000).toFixed(0)}k`;
 
 /** Reusable ranked bar chart for rep / category / region breakdowns. */
 export default function BreakdownChart({ title, data, loading, error }: BreakdownChartProps) {
+  const isNarrow = useIsNarrowViewport();
   return (
     <div className="bg-ledger-panel border border-ledger-line rounded-lg p-5">
       <h2 className="font-display text-lg text-ledger-ink mb-4">{title}</h2>
@@ -27,8 +29,13 @@ export default function BreakdownChart({ title, data, loading, error }: Breakdow
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={data.items} layout="vertical" margin={{ left: 24 }}>
             <CartesianGrid stroke="#E4E7EC" horizontal={false} />
-            <XAxis type="number" tickFormatter={currencyShort} tick={{ fontSize: 11, fill: "#5B6478" }} />
-            <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 11, fill: "#5B6478" }} />
+            <XAxis type="number" tickFormatter={currencyShort} tick={{ fontSize: isNarrow ? 10 : 11, fill: "#5B6478" }} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={isNarrow ? 70 : 100}
+              tick={{ fontSize: isNarrow ? 10 : 11, fill: "#5B6478" }}
+            />
             <Tooltip formatter={(v: number) => [`$${v.toLocaleString()}`, "Revenue"]} />
             <Bar dataKey="revenue" fill="#1E7F5C" radius={[0, 4, 4, 0]} />
           </BarChart>

@@ -13,7 +13,7 @@ import { initSchema } from "./schema";
 const REGIONS = ["West", "East", "Central", "North"];
 const CATEGORIES = ["Hardware", "Software Licenses", "Support Plans", "Professional Services", "Add-ons"];
 const REPS = [
-  { name: "Alex Chen", region: "West" },
+  { name: "Vetrivel Sivakumar", region: "West" },
   { name: "Priya Nair", region: "West" },
   { name: "Jordan Blake", region: "East" },
   { name: "Sam Rivera", region: "East" },
@@ -23,7 +23,7 @@ const REPS = [
   { name: "Drew Sullivan", region: "North" },
 ];
 
-const STAR_PERFORMER = "Alex Chen";
+const STAR_PERFORMER = "Vetrivel Sivakumar";
 const SLUMPING_REGION = "North";
 const DIP_MONTH_INDEX = 4; // 0-indexed month within the 6-month window (a slow month)
 

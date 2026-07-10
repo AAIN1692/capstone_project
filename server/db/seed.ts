@@ -128,7 +128,7 @@ export function seed() {
   console.log(`Patterns seeded: star performer = ${STAR_PERFORMER}, slumping region = ${SLUMPING_REGION}, dip month index = ${DIP_MONTH_INDEX}`);
 }
 
-/** Seeds the database only if it's currently empty (safe to call on every boot). */
+/** Seeds the database only if it's currently empty */
 export function seedIfEmpty() {
   initSchema(db);
   const row = db.prepare("SELECT COUNT(*) AS count FROM deals").get() as { count: number };

@@ -1,7 +1,6 @@
-# Idea Brief — Sales Pulse
-**Analytics Dashboard with Live Data (Option B)**
-
-## Problem Statement
+Phase 1: Project Brief and Requirements Clarification:
+------------------------------------------------------
+## Problem Statement:
 Regional and department sales managers at small-to-mid-size B2B companies currently track
 performance by manually pulling numbers into spreadsheets or waiting on a weekly report from
 an analyst. By the time they see the data, it's stale — often 3-7 days old — and it's rarely
@@ -16,8 +15,8 @@ for revenue numbers but don't have direct access to a live, filterable view of t
 underperforming reps, regions, or products go unaddressed longer, and forecasting to leadership
 becomes guesswork instead of grounded in current numbers.
 
-## Target User
-**Primary persona: Priya, Regional Sales Manager**
+## Target User:
+**Primary persona: Siva, Regional Sales Manager**
 - Manages a team of 6-10 sales reps across one region
 - Not technical — comfortable with spreadsheets, not with SQL or BI tools like Looker/Tableau
 - Currently gets a weekly PDF/email report from an ops analyst
@@ -25,12 +24,12 @@ becomes guesswork instead of grounded in current numbers.
   reps/products are driving or dragging performance? Are we on pace for quota?"
 - Checks this most often on a laptop, occasionally on mobile during travel or check-ins
 
-## Value Proposition
+## Value Proposition:
 Sales Pulse gives non-technical sales managers a live, filterable view of their team's revenue
 performance — replacing a stale weekly report with an always-current dashboard they can filter
 and drill into themselves, in plain business language, with zero training required.
 
-## MVP Scope
+## MVP Scope:
 **In scope:**
 - Summary view: total revenue, deals closed, average deal size, quota attainment % (current period)
 - Trend chart: revenue over time (daily/weekly/monthly toggle)
@@ -40,7 +39,7 @@ and drill into themselves, in plain business language, with zero training requir
 - Mock but realistic dataset (seeded, representing ~6 months of transactions for a mid-size
   B2B sales org) — generated/seeded rather than pulled from a live third-party API
 
-**Out of scope for MVP** *(minimum 5 required — expanded in PRD Section: Out of Scope)*
+**Out of scope:
 1. Multi-tenant support / multiple companies or organizations
 2. Real integration with a live CRM (Salesforce, HubSpot, etc.) — mock data only
 3. User-configurable custom dashboards or saved views
@@ -49,7 +48,7 @@ and drill into themselves, in plain business language, with zero training requir
 6. Data export (CSV/PDF export of charts)
 7. Notifications or alerting (e.g. "quota at risk" emails)
 
-## Top 3 Risks
+## Top 3 Risks:
 1. **Data realism risk** — a mock dataset that's too clean or too random won't produce
    interesting patterns (trends, underperformers, seasonality), making the dashboard look
    flat and the insights unconvincing. *Mitigation:* deliberately seed patterns — a slumping
@@ -59,15 +58,12 @@ and drill into themselves, in plain business language, with zero training requir
    before Phase 4; new chart ideas go on a backlog, not into Sprint 1.
 3. **Non-technical UX risk** — it's easy to build a dashboard that's technically correct but
    reads like an engineering tool (raw tables, unclear labels, dense charts). *Mitigation:*
-   every screen gets checked against "would Priya understand this in 10 seconds without
+   every screen gets checked against "would Siva understand this in 10 seconds without
    explanation?"
 
-## Biggest Assumption
+## Biggest Assumption:
 That a well-designed **mock but realistic** dataset is an acceptable and sufficient stand-in
 for "live data" for this capstone — i.e., the evaluation cares about the dashboard correctly
 visualizing, filtering, and summarizing time-series business data, not about the specific
 data source being a real third-party API. This will be stated explicitly and justified in the
 PRD's constraints section.
-
----
-*Next: Phase 2 — Product Requirements Document (all 9 sections), built from this brief.*

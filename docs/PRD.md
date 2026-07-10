@@ -1,10 +1,6 @@
-# Product Requirements Document — Sales Pulse
-**Analytics Dashboard with Live Data (Option B)**
-Version 1.1 — iterated after gap-check pass (see Section 9)
-
----
-
-## 1. Problem
+Phase 2 — Product Requirements Document:
+----------------------------------------
+## 1. Problem:
 Regional and department sales managers currently rely on manually-compiled spreadsheets or a
 weekly analyst report to understand their team's revenue performance. This introduces a
 3-7 day lag between when something happens (a slump, a strong week, a missed quota) and when
@@ -12,30 +8,31 @@ the manager sees it — delaying course-correction and making forecasting to lea
 than it needs to be. Sales Pulse replaces that lag with a live, self-service dashboard a
 non-technical manager can filter and read in under a minute.
 
-## 2. Users
-**Primary: Priya, Regional Sales Manager**
+## 2. Users:
+**Primary: Siva, Regional Sales Manager**
 - Manages 6-10 reps in one region; accountable for a quarterly revenue quota
 - Not technical: comfortable in spreadsheets and Slack, not in SQL/BI tools
 - Needs daily/weekly check-ins on performance, and a fast read before 1:1s with reps
 - Access pattern: mostly desktop/laptop, occasional mobile check during travel
 
 **Secondary: Sam, Sales Ops Analyst (light touch in MVP)**
-- Currently the one manually building the weekly report Priya waits on
+- Currently the one manually building the weekly report Siva waits on
 - Not a primary user of the UI in MVP, but is the implicit "data owner" — relevant to the
   data model even though no admin UI is built for them in MVP (see Out of Scope)
 
-## 3. User Stories
-| ID | Story | Priority |
-|----|-------|----------|
-| US-1 | As Priya, I want to see total revenue, deals closed, and quota attainment for the current period at a glance, so I know immediately if we're on pace. | Must-have |
-| US-2 | As Priya, I want to see a revenue trend over time, so I can spot slumps or spikes. | Must-have |
-| US-3 | As Priya, I want to filter by date range, so I can compare periods (e.g. this month vs last). | Must-have |
-| US-4 | As Priya, I want to see revenue broken down by rep, so I know who's driving or dragging performance. | Must-have |
-| US-5 | As Priya, I want to see revenue broken down by product category and region, so I can spot which lines/areas need attention. | Must-have |
-| US-6 | As Priya, I want to filter the whole dashboard by rep or product category, so I can drill into one rep's or product's numbers specifically. | Should-have |
-| US-7 | As Priya, I want the dashboard to load fast and clearly on a laptop, so I can check it in under a minute between meetings. | Must-have |
-| US-8 | As Priya, I want charts and labels in plain business language (not raw field names), so I don't need training to read it. | Must-have |
-
+## 3. User Stories:
+|------|-----------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+|  ID  | Story                                                                                                                                               | Priority   |
+|------|-----------------------------------------------------------------------------------------------------------------------------------------------------|------------|
+| US-1 | As Siva, I want to see total revenue, deals closed, and quota attainment for the current period at a glance, so I know immediately if we're on pace.| Must-have  |
+| US-2 | As Siva, I want to see a revenue trend over time, so I can spot slumps or spikes.                                                                   | Must-have  |
+| US-3 | As Siva, I want to filter by date range, so I can compare periods (e.g. this month vs last).                                                        | Must-have  |
+| US-4 | As Siva, I want to see revenue broken down by rep, so I know who's driving or dragging performance.                                                 | Must-have  |
+| US-5 | As Siva, I want to see revenue broken down by product category and region, so I can spot which lines/areas need attention.                          | Must-have  |
+| US-6 | As Siva, I want to filter the whole dashboard by rep or product category, so I can drill into one rep's or product's numbers specifically.          | Should-have|
+| US-7 | As Siva, I want the dashboard to load fast and clearly on a laptop, so I can check it in under a minute between meetings.                           | Must-have  |
+| US-8 | As Siva, I want charts and labels in plain business language (not raw field names), so I don't need training to read it.                            | Must-have  |
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ## 4. Features (Must-Have with Acceptance Criteria)
 
 **F1 — Summary KPI bar**
@@ -67,7 +64,7 @@ non-technical manager can filter and read in under a minute.
 - Secondary filters that narrow all charts to a specific rep or product category
 - AC: filters are combinable with the date range; a visible "clear filters" control exists
 
-## 5. Non-Functional Requirements
+## 5. Non-Functional Requirements:
 - **Performance:** dashboard initial load under 3 seconds on a typical broadband connection
   with the seeded dataset (~6 months of transactions, target ~2,000-5,000 rows)
 - **Usability:** every chart has a plain-language title and axis labels; no raw database
@@ -80,7 +77,7 @@ non-technical manager can filter and read in under a minute.
 - **Data integrity:** the seeded dataset must be internally consistent (deal amounts sum
   correctly to displayed KPIs; no orphaned records)
 
-## 6. Out of Scope (MVP)
+## 6. Out of Scope:
 1. Multi-tenant support / multiple companies or organizations
 2. Real integration with a live CRM (Salesforce, HubSpot, etc.) — mock/seeded data only
 3. User-configurable custom dashboards or saved views
@@ -90,7 +87,7 @@ non-technical manager can filter and read in under a minute.
 7. Notifications or alerting (e.g., "quota at risk" emails)
 8. Admin UI for Sam (the ops analyst) to edit/manage source data
 
-## 7. Success Metrics
+## 7. Success Metrics:
 - **Task success:** a first-time non-technical user can answer "are we on pace this month?"
   within 10 seconds of loading the dashboard (usability proxy, self-tested)
 - **Load performance:** initial load < 3s (measured, not just targeted)
@@ -99,15 +96,17 @@ non-technical manager can filter and read in under a minute.
 - **Correctness:** KPI totals reconcile exactly with the underlying seeded transaction data
   (spot-checked against a manual sum)
 
-## 8. Open Questions (Resolved with Rationale)
-| Question | Decision | Rationale |
-|----------|----------|-----------|
-| Real API vs. mock data? | Mock/seeded dataset | Stated assumption in Idea Brief — evaluation is about correct visualization/filtering of time-series business data, not a specific live source. A seeded dataset lets patterns be intentionally designed (see Risk 1 in Idea Brief). |
-| Single dashboard or per-rep drill-down pages? | Single dashboard with filters, no separate drill-down pages | Keeps MVP scope tight; filtering achieves the same outcome (US-6) without extra routing/pages. |
-| Auth required? | No auth in MVP | Single-user assumption for MVP; explicitly out of scope (#5). Flagged as a known simplification, not an oversight. |
-| Mobile responsiveness now or later? | Targeted as NFR now, implemented in Sprint 2 | Matches the capstone's known Sprint 2 change request (mobile responsive layout on 2 key screens), so the architecture is designed not to fight it later. |
+## 8. Open Questions :
+|-----------------------------------------------|-------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Question                                      | Decision                                                    | Rationale                    																																																		 |
+|-----------------------------------------------|-------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Real API vs. mock data?                       | Mock/seeded dataset 										  | Stated assumption in Idea Brief — evaluation is about correct visualization/filtering of time-series business data, not a specific live source. A seeded dataset lets patterns be intentionally designed (see Risk 1 in Idea Brief). |
+| Single dashboard or per-rep drill-down pages? | Single dashboard with filters, no separate drill-down pages | Keeps MVP scope tight; filtering achieves the same outcome (US-6) without extra routing/pages. 																																		 |
+| Auth required?                                | No auth in MVP 											  | Single-user assumption for MVP; explicitly out of scope (#5). Flagged as a known simplification, not an oversight. 																													 |
+| Mobile responsiveness now or later?           | Targeted as NFR now, implemented in Sprint 2                | Matches the capstone's known Sprint 2 change request (mobile responsive layout on 2 key screens), so the architecture is designed not to fight it later. 																			 |
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-## 9. Constraints & Iteration Notes
+## 9. Constraints & Iteration Notes:
 - **Tech constraint:** must use React + TypeScript + Recharts per the recommended stack for
   Option B; data layer can be a lightweight local API (e.g. Express serving the seeded
   dataset) or a static JSON/DB read — decided in Phase 3 (Architecture).
@@ -123,6 +122,3 @@ non-technical manager can filter and read in under a minute.
   ship in MVP because they're low-effort given the filter architecture is shared, but if time
   runs short, US-6's *combinability* (filters stacking) is the first thing to cut per the
   Time Pressure guidance (cut from Should-have, not from tests/docs).
-
----
-*Next: Phase 3 — Technical Architecture Document (all 6 sections), built from this PRD.*

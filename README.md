@@ -29,15 +29,16 @@ Capstone (Option B: Analytics Dashboard with Live Data).
 ## Environment Variables
 
 **`server/.env`** (copy from `server/.env.example`)
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `PORT` | Port the API listens on | `4000` |
-| `DB_PATH` | Path to the SQLite database file | `./sales_pulse.db` |
+| Variable        | Purpose                                                                | Example            |
+|-----------------|------------------------------------------------------------------------|--------------------|
+| `PORT`          | Port the API listens on                                                | `4000`             |
+| `DB_PATH`       | Path to the SQLite database file                                       | `./sales_pulse.db` |
 | `CLIENT_ORIGIN` | Allowed CORS origin (must match the frontend's real URL in production) | `https://capstone-project-plum-six-96.vercel.app` |
 
+
 **`client/.env`** (copy from `client/.env.example`)
-| Variable | Purpose | Example |
-|----------|---------|---------|
+| Variable       | Purpose                                      | Example                                                 |
+|----------------|----------------------------------------------|---------------------------------------------------------|
 | `VITE_API_URL` | Base URL the frontend calls for API requests | `https://capstoneproject-production-826b.up.railway.app/api` |
 
 ## Local Setup
